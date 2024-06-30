@@ -10,10 +10,10 @@ const Contributor = () => {
         width={20}
         height={20}
       />
-      <div className='flex flex-col cursor-pointer'>
+      <div className='flex flex-col cursor-pointer w-full'>
         <p className='text-green-600 font-semibold text-sm'>Kevin Nokia</p>
-        <p className='text-gray-400 text-sm'>
-          sr_sinha_dhyaneshwar@kunze.example"
+        <p className='text-gray-400 text-sm break-words'>
+          sr_sinha_dhyaneshwar@kunze.example
         </p>
       </div>
     </div>
