@@ -17,7 +17,7 @@ const Navbar = () => {
               variant: 'ghost'
             })}
           >
-            Users
+            Contributors
           </Link>
         </div>
       </MaxWidthWrapper>
