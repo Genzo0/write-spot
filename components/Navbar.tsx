@@ -11,13 +11,13 @@ const Navbar = () => {
         </Link>
         <div className='h-full flex items-center space-x-4'>
           <Link
-            href={'/users'}
+            href={'/contributors'}
             className={buttonVariants({
               size: 'sm',
               variant: 'ghost'
             })}
           >
-            Users
+            Contributors
           </Link>
         </div>
       </MaxWidthWrapper>
