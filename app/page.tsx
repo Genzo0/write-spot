@@ -32,7 +32,7 @@ export default function Home () {
             <Contributor />
             <Contributor />
           </div>
-          <Link href={'/users'} className='text-green-600 text-sm'>
+          <Link href={'/contributors'} className='text-green-600 text-sm'>
             see other contributors...
           </Link>
         </div>
