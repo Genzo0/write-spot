@@ -288,7 +288,7 @@ const Page = () => {
               <DialogHeader>
                 <DialogTitle>Add Contributor</DialogTitle>
                 <DialogDescription>
-                  Add a Contributor. Click save when you're done.
+                  Add a Contributor. Click save when you`re done.
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
@@ -587,7 +587,7 @@ const Page = () => {
           <DialogHeader>
             <DialogTitle>Edit Contributor</DialogTitle>
             <DialogDescription>
-              Make changes to users here. Click save when you're done.
+              Make changes to users here. Click save when you`re done.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
