@@ -20,10 +20,69 @@ import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import ListSkeleton from '@/components/ListSkeleton'
 import { useToast } from '@/components/ui/use-toast'
 import { ToastAction } from '@/components/ui/toast'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+import { Loader2 } from 'lucide-react'
+
+const formSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  body: z.string().min(1)
+})
 
 const CommentSection = ({ id }: { id: string }) => {
   const [comments, setComments] = useState<Comment[]>([])
   const { toast } = useToast()
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      body: ''
+    }
+  })
+
+  const { isSubmitting } = form.formState
+
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+        },
+        body: JSON.stringify(values)
+      }
+    )
+
+    if (response.status === 201) {
+      form.reset()
+      setComments([...comments, await response.json()])
+      toast({
+        title: 'Comment posted!',
+        description: 'Your comment has been posted successfully.',
+        className: 'bg-green-500/75'
+      })
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'There was a problem with your request.'
+      })
+    }
+  }
 
   useEffect(() => {
     const getComments = async () => {
@@ -45,38 +104,6 @@ const CommentSection = ({ id }: { id: string }) => {
     getComments()
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData.entries())
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
-        },
-
-        body: JSON.stringify(data)
-      }
-    )
-
-    if (response.ok) {
-      const comment = await response.json()
-      setComments([...comments, comment])
-      e.currentTarget.reset()
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.',
-        action: <ToastAction altText='Try again'>Try again</ToastAction>
-      })
-    }
-  }
-
   return (
     <MaxWidthWrapper>
       <Card className='w-full bg-green-500/5 rounded-lg'>
@@ -93,32 +120,86 @@ const CommentSection = ({ id }: { id: string }) => {
       </Card>
       <Separator className='my-10' />
       <Card className='w-full bg-green-500/5 text-gray-400'>
-        <form onSubmit={handleSubmit}>
-          <CardContent>
-            <p className='text-left text-lg my-5'>Leave Comment</p>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <CardContent>
+              <p className='text-left text-lg my-5'>Leave Comment</p>
 
-            <div className='grid w-full items-center gap-4'>
-              <div className='md:flex gap-2'>
-                <div className='w-full md:w-1/2 flex-col space-y-1.5'>
-                  <Label htmlFor='name'>Name</Label>
-                  <Input id='name' placeholder='Your name...' />
+              <div className='grid w-full items-center gap-4'>
+                <div className='md:flex gap-2'>
+                  <FormField
+                    control={form.control}
+                    name='name'
+                    render={({ field }) => {
+                      return (
+                        <FormItem className='w-full md:w-1/2 flex-col space-y-1.5'>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              id='name'
+                              placeholder='Your name...'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='email'
+                    render={({ field }) => {
+                      return (
+                        <FormItem className='w-full md:w-1/2 flex-col space-y-1.5'>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              id='email'
+                              placeholder='Your email...'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )
+                    }}
+                  />
                 </div>
-                <div className='w-full md:w-1/2 flex-col space-y-1.5'>
-                  <Label htmlFor='email'>Email</Label>
-                  <Input id='email' placeholder='Your email...' />
-                </div>
+                <FormField
+                  control={form.control}
+                  name='body'
+                  render={({ field }) => {
+                    return (
+                      <FormItem className='w-full flex-col space-y-1.5'>
+                        <FormLabel>Comment</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id='body'
+                            placeholder='Your comment...'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
+                />
               </div>
-              <div className='flex flex-col space-y-1.5'>
-                <Label htmlFor='comment'>Comment</Label>
-                <Textarea id='comment' placeholder='Your comment...' />
-              </div>
-            </div>
-          </CardContent>
+            </CardContent>
 
-          <CardFooter className='flex justify-center'>
-            <Button type='submit'>Post comment</Button>
-          </CardFooter>
-        </form>
+            <CardFooter className='flex justify-center'>
+              {isSubmitting ? (
+                <Button disabled>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Posting Data
+                </Button>
+              ) : (
+                <Button type='submit'>Post comment</Button>
+              )}
+            </CardFooter>
+          </form>
+        </Form>
       </Card>
     </MaxWidthWrapper>
   )

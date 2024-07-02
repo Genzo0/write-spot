@@ -22,6 +22,8 @@ import { Comment } from '@/types/comment'
 import Image from 'next/image'
 import { FormEvent } from 'react'
 import CommentSection from './CommentSection'
+import { useToast } from '@/components/ui/use-toast'
+import { notFound } from 'next/navigation'
 
 type Params = {
   id: string
@@ -30,34 +32,52 @@ type Params = {
 const Page = async ({ params }: { params: Params }) => {
   const { id } = params
 
+  const getBlogs = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts`
+    )
+    if (response.status === 200) {
+      return await response.json()
+    } else {
+      return notFound()
+    }
+  }
+
   const getUserBlogs = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL_API}/users/${id}/posts`
     )
-    if (!response.ok) {
-      throw new Error('Failed to fetch user blogs')
-    } else {
+    if (response.status === 200) {
       return await response.json()
+    } else {
+      return notFound()
     }
   }
 
   const getBlog = async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}`
+      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+        }
+      }
     )
-    if (!response.ok) {
-      throw new Error('Failed to fetch blog')
-    } else {
+    if (response.status === 200) {
       return await response.json()
+    } else {
+      return notFound()
     }
   }
 
+  const blogs = await getBlogs()
   const blog = await getBlog()
   const userBlogs = await getUserBlogs()
 
   return (
     <>
-      <MaxWidthWrapper className='flex flex-col justify-center items-center'>
+      <MaxWidthWrapper className='flex flex-col justify-center'>
         <div className='flex flex-col py-10 gap-3 mb-5'>
           <h2 className='font-extrabold md:text-5xl text-4xl'>{blog.title}</h2>
           <div className='flex items-center gap-x-3'>
@@ -94,6 +114,19 @@ const Page = async ({ params }: { params: Params }) => {
           </MaxWidthWrapper>
         </div>
       )}
+
+      <div className='w-full text-black mt-5 md:mt-10 bg-white'>
+        <MaxWidthWrapper className='py-10'>
+          <p className='font-semibold pt-5 text-2xl text-green-600'>
+            Others Blog
+          </p>
+          <div className='my-5 grid grid-cols-1 gap-5'>
+            {blogs.slice(4, 9).map((blog: Blog) => (
+              <BlogPreview key={blog.id} {...blog} />
+            ))}
+          </div>
+        </MaxWidthWrapper>
+      </div>
     </>
   )
 }
