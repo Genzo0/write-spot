@@ -18,8 +18,11 @@ export default function Error ({
   }, [error])
 
   return (
-    <MaxWidthWrapper className='flex flex-col justify-center items-center min-h-[calc(100vh-8.5rem-1px)] gap-4'>
+    <MaxWidthWrapper className='flex flex-col justify-center items-center min-h-[calc(100vh-8.5rem-1px)] gap-3'>
       <h2 className='text-4xl font-semibold'>Something went wrong!</h2>
+      <h2 className='text-2xl font-medium'>
+        Try again later if error still occured
+      </h2>
       <Button
         className='bg-transparent text-black border gray-400 hover:bg-gray-100 hover:border-green-500'
         size='sm'

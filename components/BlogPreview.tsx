@@ -4,7 +4,7 @@ import { Blog } from '@/types/blog'
 
 const BlogPreview = async ({ id, user_id, title, body }: Blog) => {
   const comments = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments`
+    `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments?access-token=${process.env.NEXT_PUBLIC_TOKEN}`
   ).then(res => res.json())
 
   return (

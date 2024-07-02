@@ -87,7 +87,7 @@ const CommentSection = ({ id }: { id: string }) => {
   useEffect(() => {
     const getComments = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments`
+        `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts/${id}/comments?access-token=${process.env.NEXT_PUBLIC_TOKEN}`
       )
       if (!response.ok) {
         toast({

@@ -12,7 +12,7 @@ import { User } from '@/types/user'
 export default async function Home () {
   const getBlogs = async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts`
+      `${process.env.NEXT_PUBLIC_BASE_URL_API}/posts?access-token=${process.env.NEXT_PUBLIC_TOKEN}`
     )
     if (!response.ok) {
       throw new Error('Failed to fetch blogs')
@@ -24,7 +24,9 @@ export default async function Home () {
   const data = await getBlogs()
 
   const getUsers = async () => {
-    const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_API}/users`)
+    const data = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL_API}/users?access-token=${process.env.NEXT_PUBLIC_TOKEN}`
+    )
     return await data.json()
   }
 
