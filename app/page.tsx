@@ -9,6 +9,8 @@ import { Blog } from '@/types/blog'
 import ListSkeleton from '@/components/ListSkeleton'
 import { User } from '@/types/user'
 
+export const revalidate = 30
+
 export default async function Home () {
   const getBlogs = async () => {
     const response = await fetch(

@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     'Write Spot is a blog where you can read about the latest news and trends in the tech industry.'
 }
 
+export const revalidate = 30
+
 export default function RootLayout ({
   children
 }: Readonly<{
