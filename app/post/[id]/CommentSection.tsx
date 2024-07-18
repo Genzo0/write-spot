@@ -69,7 +69,7 @@ const CommentSection = ({ id }: { id: string }) => {
 
     if (response.status === 201) {
       form.reset()
-      setComments([...comments, await response.json()])
+      const newComment = await response.json()
       toast({
         title: 'Comment posted!',
         description: 'Your comment has been posted successfully.',
@@ -102,7 +102,7 @@ const CommentSection = ({ id }: { id: string }) => {
     }
 
     getComments()
-  }, [])
+  }, [isSubmitting])
 
   return (
     <MaxWidthWrapper>
