@@ -115,6 +115,11 @@ _Below is an example of how you can instruct your audience on installing and set
    const NEXT_PUBLIC_BASE_URL_API = 'https://gorest.co.in/public/v2';
    const NEXT_PUBLIC_TOKEN = 'ENTER YOUR TOKEN FROM GOREST.CO.IN'
    ```
+4. You can login using
+   ```sh
+   username : admin
+   password : admin
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
